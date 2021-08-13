@@ -1,3 +1,7 @@
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from fastslam1_cones import *
 import math
 
@@ -78,7 +82,7 @@ Load Data
 """
 track_name = "Competition Track 2"
 
-with open('images/particles_competitionTrack2.pickle', 'rb') as handle:
+with open('data/particles_competitionTrack2.pickle', 'rb') as handle:
   data = pickle.load(handle)
 
 x_position_list = data[1]
@@ -97,7 +101,7 @@ velocity_list = data[7][0:len(curvature_list)]
 print(len(hxEst[:,0]), len(hxEst[0,:]))
 
 # Ground truth cone positions
-processed_cones_df = pd.read_csv("processed_cones_competitionTrack2.csv")
+processed_cones_df = pd.read_csv("data/processed_cones_competitionTrack2.csv")
 x_list = processed_cones_df['x'].tolist()
 y_list = processed_cones_df['y'].tolist()
 color_list = processed_cones_df['color'].tolist()
@@ -237,7 +241,9 @@ x_new, y_new = splev(u_new, tck, der=0)
 
 plt.plot(clustered_blue_landmarks.cluster_centers_[:,0], clustered_blue_landmarks.cluster_centers_[:,1], 'ro')
 plt.plot(x_new, y_new, 'b--')
+plt.title(f"Raw generated boundary in {track_name}")
+plt.xlabel("x (m)")
+plt.ylabel("y (m)")
 plt.show()
 
-plt.show()
 

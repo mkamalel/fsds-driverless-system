@@ -118,18 +118,21 @@ class TrackMap():
     return curvature 
 
 
-  def plot_track(self, blue_interp, yellow_interp, center_interp, curvature):
+  def plot_track(self, blue_interp, yellow_interp, center_interp, curvature, track_name):
     #plt.figure()
-    #plt.plot(filtered_blue_landmarks[:,0], filtered_blue_landmarks[:,1], 'bo')
+    plt.plot(filtered_blue_landmarks[:,0], filtered_blue_landmarks[:,1], 'bo')
     plt.plot(blue_interp[:,0], blue_interp[:,1], 'b--')
-
-    #plt.plot(filtered_yellow_landmarks[:,0], filtered_yellow_landmarks[:,1], 'yo')
+    plt.plot(filtered_yellow_landmarks[:,0], filtered_yellow_landmarks[:,1], 'yo')
     plt.plot(yellow_interp[:,0], yellow_interp[:,1], 'y--')
+    #plt.plot(center_interp[:,0], center_interp[:,1], '--', c='black')    
+    plt.scatter(center_interp[:,0], center_interp[:,1], s=5, c=curvature, cmap="magma_r", marker="o")
+    plt.title(f"Interpolated center path with curvature in {track_name}")
+    plt.xlabel("x (m)")
+    plt.ylabel("y (m)")
 
-    plt.plot(center_interp[:,0], center_interp[:,1], '--', c='black')    
 
-    plt.scatter(center_interp[:,0], center_interp[:,1], s=10, c=curvature, cmap="magma_r", marker="o")
-    cbar2 = plt.colorbar()
+    cbar = plt.colorbar()
+    cbar.set_label("Curvature")
 
 
 if __name__=='__main__':
@@ -138,7 +141,7 @@ if __name__=='__main__':
   """
   Load Data
   """
-  with open('images/particles.pickle', 'rb') as handle:
+  with open('analysis/data/particles_competitionTrack2.pickle', 'rb') as handle:
     data = pickle.load(handle)
 
   time_delta_list = data[0]
@@ -167,6 +170,6 @@ if __name__=='__main__':
 
   curvature = track_map.get_track_curvature(center_interp)
   print(center_interp[9990:10])
-  track_map.plot_track(blue_interp, yellow_interp, center_interp, curvature)
+  track_map.plot_track(blue_interp, yellow_interp, center_interp, curvature, "Competition Track 2")
   #plt.plot(x_position_list, y_position_list)
   plt.show()
