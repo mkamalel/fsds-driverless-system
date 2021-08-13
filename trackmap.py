@@ -1,3 +1,9 @@
+"""
+Track Map to process XY positions of cones to a map
+
+Author: Mahmoud Kamaleldin
+"""
+
 from fastslam1_cones import *
 import math
 import matplotlib.pyplot as plt

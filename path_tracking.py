@@ -1,3 +1,8 @@
+"""
+Path tracker using Stanley Controller
+
+Author: Mahmoud Kamaleldin
+"""
 import sys
 import os
 import time

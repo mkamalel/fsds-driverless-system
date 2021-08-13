@@ -1,3 +1,9 @@
+"""
+Main driverless application for use with Formula Student Driverless Simulation
+
+Author: Mahmoud Kamaleldin
+"""
+
 import sys
 import os
 import time

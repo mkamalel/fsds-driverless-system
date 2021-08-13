@@ -1,3 +1,9 @@
+"""
+Track Explorer that creates a map using FastSLAM
+
+Author: Mahmoud Kamaleldin
+"""
+
 import sys
 import os
 import time
