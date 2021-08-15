@@ -12,10 +12,10 @@ import pickle
 import pandas as pd
 from sklearn.cluster import KMeans
 from icp import icp
-import matplotlib.colors
+import matplotlib.colors as colors
 from scipy.interpolate import splprep, splev
 
-sns.set(rc={'figure.figsize':(14, 8), 'axes.grid' : False})
+sns.set(rc={'figure.figsize':(14, 8), 'axes.grid' : False, 'axes.facecolor':'silver'})
 
 """
 Load Data
@@ -26,7 +26,7 @@ with open('data/tracking_competitionTrack1.pickle', 'rb') as handle:
   data = pickle.load(handle)
 
 cross_track_error_list = data[0]
-heading_error_list = data[1]
+heading_error_list = [heading*180/np.pi for heading in data[1]]
 curvature_list = data[2]
 steering_control_list = data[3]
 x_position_list = data[4]
@@ -63,7 +63,7 @@ plt.plot(time_delta_list, velocity_error_list, label="Velocity Error")
 #plt.plot(time_delta_list, curvature_list, label="Curvature")
 plt.legend()
 plt.xlabel("Time(s)")
-plt.ylabel("Velocity(m/s) / Curvature(m)")
+plt.ylabel("Velocity Error(m/s)")
 
 plt.figure()
 plt.title("Cross Track Error vs Time Elapsed")
@@ -71,7 +71,7 @@ plt.plot(time_delta_list, cross_track_error_list, label="Cross Track Error")
 #plt.plot(time_delta_list, curvature_list, label="Curvature")
 plt.legend()
 plt.xlabel("Time(s)")
-plt.ylabel("Center Error(m) / Curvature(m)")
+plt.ylabel("Cross Track Error(m)")
 
 plt.figure()
 plt.title("Heading Error vs Time Elapsed")
@@ -79,19 +79,49 @@ plt.plot(time_delta_list, heading_error_list, label="Heading Error")
 #plt.plot(time_delta_list, curvature_list, label="Curvature")
 plt.legend()
 plt.xlabel("Time(s)")
-plt.ylabel("Center Error(m) / Curvature(m)")
+plt.ylabel("Heading Error(deg)")
 
-print(velocity_list)
+
 track_fig = plt.figure()
-plt.scatter(gt_cones[:,0], gt_cones[:,1], s=50, c='b', marker='o')
-plt.scatter(x_position_list, y_position_list, s=50, c=velocity_list, cmap="Reds")
+plt.scatter(gt_cones[:,0], gt_cones[:,1], s=50, c='black', marker='o')
+plt.scatter(x_position_list, y_position_list, s=20, c=velocity_list, cmap="Reds")
 plt.title("Velocity throughout Known Track")
 plt.legend()
 cbar = plt.colorbar()
-cbar.set_label("Velocity (m/s)")
+cbar.set_label("Velocity(m/s)")
 plt.xlabel("x (m)")
 plt.ylabel("y (m)")
 
 
+track_fig = plt.figure()
+plt.scatter(gt_cones[:,0], gt_cones[:,1], s=50, c='black', marker='o')
+plt.scatter(x_position_list[200:], y_position_list[200:], s=20, c=velocity_error_list[200:], cmap="RdYlBu", norm=colors.TwoSlopeNorm(0.0))
+plt.title("Velocity Error throughout Known Track")
+plt.legend()
+cbar = plt.colorbar()
+cbar.set_label("Velocity Error(m/s)")
+plt.xlabel("x (m)")
+plt.ylabel("y (m)")
+
+
+track_fig = plt.figure()
+plt.scatter(gt_cones[:,0], gt_cones[:,1], s=50, c='black', marker='o')
+plt.scatter(x_position_list, y_position_list, s=20, c=cross_track_error_list, cmap="RdYlBu", norm=colors.TwoSlopeNorm(0.0))
+plt.title("Cross Track Error throughout Known Track")
+plt.legend()
+cbar = plt.colorbar()
+cbar.set_label("Cross Track Error(m)")
+plt.xlabel("x (m)")
+plt.ylabel("y (m)")
+
+track_fig = plt.figure()
+plt.scatter(gt_cones[:,0], gt_cones[:,1], s=50, c='black', marker='o')
+plt.scatter(x_position_list, y_position_list, s=20, c=heading_error_list, cmap="RdYlBu", norm=colors.TwoSlopeNorm(0.0))
+plt.title("Heading Error throughout Known Track")
+plt.legend()
+cbar = plt.colorbar()
+cbar.set_label("Heading Error(deg)")
+plt.xlabel("x (m)")
+plt.ylabel("y (m)")
 
 plt.show()
