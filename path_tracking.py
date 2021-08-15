@@ -38,6 +38,17 @@ class PathTracker():
 
     self.stanley_state = stanley.State(x=0.0, y=0.0, yaw=np.radians(0.0), v=0.0)
 
+    self.cross_track_error_list = []
+    self.heading_error_list = []
+    self.curvature_list = []
+    self.steering_control_list = []
+    self.x_position_list = []
+    self.y_position_list = []
+
+  def log_data(self):
+    return [self.cross_track_error_list, self.heading_error_list, self.curvature_list, self.steering_control_list, self.x_position_list, self.y_position_list, 0, 0, 0]
+
+
   def track_path(self):
     state = self.fsds_client.getCarState()
 
@@ -51,7 +62,7 @@ class PathTracker():
     self.stanley_state.yaw = theta
     self.stanley_state.v = np.hypot(lin_vel.x_val, lin_vel.y_val)
 
-    delta, current_target_idx = stanley.stanley_control(self.stanley_state, self.center_interp[:,0], self.center_interp[:,1])
+    delta, current_target_idx, theta_e, theta_d = stanley.stanley_control(self.stanley_state, self.center_interp[:,0], self.center_interp[:,1])
     delta = np.clip(delta, -stanley.max_steer, stanley.max_steer)
     #stanley_state.yaw += stanley_state.v / stanley.L * np.tan(delta) * dt
     #stanley_state.yaw = stanley.normalize_angle(stanley_state.yaw)
@@ -72,5 +83,12 @@ class PathTracker():
     curvature_ewma = self.curvature_array[curve_idx]
 
     steering_control = -delta/math.pi
+
+    self.cross_track_error_list.append(theta_d)
+    self.heading_error_list.append(theta_e)
+    self.curvature_list.append(curvature_ewma)
+    self.steering_control_list.append(steering_control)
+    self.x_position_list.append(position.x_val)
+    self.y_position_list.append(position.y_val)
 
     return steering_control, curvature_ewma, self.max_curvature

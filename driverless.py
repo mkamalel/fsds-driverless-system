@@ -126,7 +126,7 @@ center_error_list = []
 Trackmap
 """
 """
-with open('images/particles_trackday2.pickle', 'rb') as handle:
+with open('analysis/data/particles_competitionTrack1.pickle', 'rb') as handle:
     data = pickle.load(handle)
 
 particles = data[8]
@@ -153,6 +153,10 @@ y_position_list = []
 theta_position_list = []
 time_delta_list = []
 
+tracking_velocity_list = []
+tracking_velocity_error_list = []
+tracking_time_delta_list = []
+
 track_explorer = track_explore.TrackExplorer(particles, client)
 #path_tracker = path_tracking.PathTracker(particles, hxEst, client)
 PATH_TRACK_INITIALIZED = False
@@ -177,6 +181,7 @@ while True:
         steering_control, curvature_ewma, max_curvature = path_tracker.track_path()
         max_curvature = 0.1
         car_controls.steering = steering_control
+        tracking_data = path_tracker.log_data()
 
     else:
         max_throttle = 0.3 # m/s^2
@@ -216,14 +221,28 @@ while True:
     velocity_list.append(velocity)
     time_delta_list.append(time_elapsed)
 
-    data[0] = time_delta_list
-    data[6] = velocity_list
-    data[7] = velocity_error_list
 
-    #if i%5 == 0:
-        #with open(f'images/particles_competitionTrack2.pickle', 'wb') as handle:
-            #pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    if PATH_TRACK_INITIALIZED == False:
+        data[0] = time_delta_list
+        data[6] = velocity_list
+        data[7] = velocity_error_list
 
+        #if i%5 == 0:
+            #with open(f'images/particles_competitionTrack2.pickle', 'wb') as handle:
+                #pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+    if PATH_TRACK_INITIALIZED == True:
+        tracking_velocity_error_list.append(vel_error)
+        tracking_velocity_list.append(velocity)
+        tracking_time_delta_list.append(time_elapsed)
+
+        tracking_data[6] = tracking_time_delta_list
+        tracking_data[7] = tracking_velocity_list
+        tracking_data[8] = tracking_velocity_error_list
+
+        #if i%5 == 0:
+            #with open(f'analysis/data/tracking_competitionTrack1.pickle', 'wb') as handle:
+                #pickle.dump(tracking_data, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     # draw cones
     #for cone in cones_cam:

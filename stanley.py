@@ -110,7 +110,7 @@ def stanley_control(state, cx, cy):
     print("cross track: ", theta_d, " heading: ", theta_e)
     delta = 7*theta_e + theta_d
 
-    return delta, current_target_idx
+    return delta, current_target_idx, theta_e, theta_d
 
 
 def normalize_angle(angle):
