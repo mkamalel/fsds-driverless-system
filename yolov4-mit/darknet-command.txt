@@ -1,0 +1,1 @@
+./darknet detector test  ../yolov4-mit/cones.data ../yolov4-mit/yolov4-tiny-cones-infer.cfg ../yolov4-mit/yolov4-tiny-cones_best.weights ../yolov4-mit/example.png -ext_output -thresh 0.4

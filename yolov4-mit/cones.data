@@ -1,0 +1,4 @@
+classes = 4
+train = /content/drive/MyDrive/driverless/models/yolov4-mit/train.txt
+names = /home/mkamalel/fsds_src/yolov4/yolov4-mit/cones.names
+backup = /content/drive/MyDrive/driverless/models/yolov4-mit/backup

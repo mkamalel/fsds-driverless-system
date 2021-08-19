@@ -87,7 +87,7 @@ class TrackExplorer():
     """
     Darknet Initialization
     """
-    base_dir = '/home/mkamalel/fsds_src/yolov4/yolov4-mit'
+    base_dir = './yolov4-mit'
     weights = f'{base_dir}/yolov4-tiny-cones-416_best.weights'
     data_file = f'{base_dir}/cones.data'
     config_file = f'{base_dir}/yolov4-tiny-cones-416-infer.cfg'
