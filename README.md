@@ -3,6 +3,7 @@ Autonomous software stack built using Python3 and implemented on the Formula Stu
 
 ## System Design
 ![System design](https://github.com/mkamalel/fsds-driverless-system/blob/main/docs/images/fsds-system.png)
+
 Documentation of the code is provided in the python files
 
 ## Getting Started
