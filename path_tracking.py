@@ -3,20 +3,54 @@ Path tracker using Stanley Controller
 
 Author: Mahmoud Kamaleldin
 """
+# Pip packages
 import sys
 import os
 import time
 import numpy as np
 import math
 
-#sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# Local packages
 import fsds
 import trackmap
 import stanley
 
 
 class PathTracker():
+  """
+  A class that defines a map of track using cone observations
+
+  ...
+
+  Attributes
+  ----------
+  slam_particles : list of FastSlAM particles
+      a list of initiallzed FstSLAM particles
+  hxEst : 2 by ND array
+    ND array of XY car throughout track
+  fsds_client : fsds Client
+      client used to communicate with the FSDS simulator
+
+  Methods
+  -------
+  track_path()
+      Perform path tracking
+  log_data()
+      Log data in list
+  """
+
   def __init__(self, slam_particles, hxEst, fsds_client):
+    """
+    Attributes
+    ----------
+    slam_particles : list of FastSlAM particles
+        a list of initiallzed FstSLAM particles
+    hxEst : 2 by ND array
+      ND array of XY car throughout track
+    fsds_client : fsds Client
+        client used to communicate with the FSDS simulator
+    """
+
     self.fsds_client = fsds_client
 
     track_map = trackmap.TrackMap(hxEst, slam_particles[0].mu, slam_particles[0].labels)
@@ -38,6 +72,7 @@ class PathTracker():
 
     self.stanley_state = stanley.State(x=0.0, y=0.0, yaw=np.radians(0.0), v=0.0)
 
+    # Initiallize data logging lists
     self.cross_track_error_list = []
     self.heading_error_list = []
     self.curvature_list = []
@@ -46,10 +81,28 @@ class PathTracker():
     self.y_position_list = []
 
   def log_data(self):
+    """Return logged data
+
+    Returns
+    -------
+    data : list of lists
+        list of logged data
+    """
     return [self.cross_track_error_list, self.heading_error_list, self.curvature_list, self.steering_control_list, self.x_position_list, self.y_position_list, 0, 0, 0]
 
-
   def track_path(self):
+    """Perform path tracking
+
+    Returns
+    -------
+    steering_control : float
+        control input for steering 
+    curvature_ewma : float
+        smoothed curvature
+    max_curvature : float
+        max curvature threshold
+    """   
+
     state = self.fsds_client.getCarState()
 
     lin_vel = state.kinematics_estimated.linear_velocity
@@ -64,26 +117,24 @@ class PathTracker():
 
     delta, current_target_idx, theta_e, theta_d = stanley.stanley_control(self.stanley_state, self.center_interp[:,0], self.center_interp[:,1])
     delta = np.clip(delta, -stanley.max_steer, stanley.max_steer)
-    #stanley_state.yaw += stanley_state.v / stanley.L * np.tan(delta) * dt
-    #stanley_state.yaw = stanley.normalize_angle(stanley_state.yaw)
+
     L = 0.9
     fx = position.x_val + L * np.cos(theta)
     fy = position.y_val + L * np.sin(theta)
-
-
-    #print("stanley: ", delta, "yaw: ", stanley_state.yaw)
 
     dx = [fx - icx for icx in self.center_interp[:,0]]
     dy = [fy - icy for icy in self.center_interp[:,1]]
     d = np.hypot(dx, dy)
     target_idx = np.argmin(d)
 
+    # Get curvature ahead based on speed of the car
     look_ahead = min(int(self.stanley_state.v*2), 20)
     curve_idx = (target_idx+look_ahead)%10000
     curvature_ewma = self.curvature_array[curve_idx]
 
     steering_control = -delta/math.pi
 
+    # Data logging
     self.cross_track_error_list.append(theta_d)
     self.heading_error_list.append(theta_e)
     self.curvature_list.append(curvature_ewma)
