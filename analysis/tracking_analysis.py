@@ -3,7 +3,7 @@ import os
 import math
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from fastslam1_cones import *
+from fastslam import *
 
 import matplotlib.pyplot as plt
 import seaborn as sns

@@ -12,7 +12,7 @@ import pickle
 from scipy.interpolate import splprep, splev
 
 # Local packages
-from fastslam1_cones import *
+from fastslam import *
 
 def distance(x1, y1, x2, y2):
   """Get euclidean distance between two points"""

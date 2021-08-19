@@ -17,7 +17,7 @@ import math
 # Local Libraries
 import fsds
 import darknet
-from fastslam1_cones import *
+from fastslam import *
 
 IMG_DIM = 416
 FOV_ANGLE = 120*math.pi/180

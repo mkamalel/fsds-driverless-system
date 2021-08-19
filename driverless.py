@@ -18,7 +18,7 @@ from simple_pid import PID
 # Local packages
 import fsds
 import darknet
-from fastslam1_cones import *
+from fastslam import *
 import trackmap
 import stanley
 import track_explore
