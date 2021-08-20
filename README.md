@@ -4,7 +4,24 @@ Autonomous software stack built using Python3 and implemented on the Formula Stu
 ## System Design
 ![System design](https://github.com/mkamalel/fsds-driverless-system/blob/main/docs/images/fsds-system.png)
 
-Documentation of the code is provided in the python files
+Documentation of the code is provided in the python files. Pretrained Yolov4 weights for detecting cones are provided in the yolov4-mit folder.
+- Original Code
+  - trackmap.py
+    - A class that defines a map of track using cone observations
+  - path_tracking.py
+    - A class that tracks a path using a Stanley Controller
+  - track_explore.py
+    - A class used to explore a track of cones and generate a map using FastSLAM
+  - driverless.py
+    - Main driverless application for use with Formula Student Driverless Simulation
+- Modified Code
+  - fastslam.py
+    - Added labels to landmark observations
+  - stanley.py
+    - Added look ahead for stanley controller
+- Unmodified Code
+  - darknet.py
+
 
 ## Getting Started
 ### Prerequisites
